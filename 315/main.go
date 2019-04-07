@@ -1,54 +1,5 @@
 package _315
 
-type bit struct {
-    tree []int
-}
-
-func lowBit(index int) int {
-    return index & (-index)
-}
-
-func (b *bit) add(index int, number int) {
-    index += 1
-    for index < len(b.tree) {
-        b.tree[index] += number
-        index += lowBit(index)
-    }
-}
-
-func (b *bit) preSum(index int) int {
-    index += 1
-    sum := 0
-    for index > 0 {
-        sum += b.tree[index]
-        index -= lowBit(index)
-    }
-    return sum
-}
-
-func countSmaller(nums []int) []int {
-    sorted := make([]int, len(nums))
-    copy(sorted, nums)
-    qsort(sorted)
-    rank := 0
-    ranks := make(map[int]int)
-    for _, s := range sorted {
-        ranks[s] = rank
-        rank++
-    }
-    for i, n := range nums {
-        nums[i] = ranks[n]
-    }
-    result := make([]int, len(nums))
-    var bt = bit{tree: make([]int, len(nums)+1)}
-    for i := len(nums) - 1; i >= 0; i-- {
-        bt.add(nums[i], 1)
-        result[i] += bt.preSum(nums[i] - 1)
-
-    }
-    return result
-}
-
 func qsort(nums []int) {
     if len(nums) <= 1 {
         return
@@ -63,4 +14,56 @@ func qsort(nums []int) {
     nums[0], nums[pivot] = nums[pivot], nums[0]
     qsort(nums[:pivot])
     qsort(nums[pivot+1:])
+}
+
+type segTree struct {
+    tree [] int
+    n    int
+}
+
+func (st *segTree) add(index int, number int) {
+    index += st.n
+    for index > 0 {
+        st.tree[index] += number
+        index = index >> 1
+    }
+}
+
+func (st *segTree) sum(left int, right int) int {
+    left += st.n
+    right += st.n
+    sum := 0
+    for left < right {
+        if left&1 == 1 {
+            sum += st.tree[left]
+            left++
+        }
+        if right&1 == 1 {
+            right--
+            sum += st.tree[right]
+        }
+        left = left >> 1
+        right = right >> 1
+    }
+    return sum
+}
+
+func countSmaller(nums []int) []int {
+    sorted := make([]int, len(nums))
+    copy(sorted, nums)
+    qsort(sorted)
+    ranks := make(map[int]int, len(sorted))
+    for i := range sorted {
+        ranks[sorted[i]] = i
+    }
+    for i := range nums {
+        nums[i] = ranks[nums[i]]
+    }
+    st := segTree{tree: make([]int, len(nums)*2), n: len(nums)}
+    result := make([]int, len(nums))
+    for i := len(nums) - 1; i >= 0; i-- {
+        st.add(nums[i], 1)
+        result[i] = st.sum(0, nums[i])
+    }
+    return result
 }
