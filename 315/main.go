@@ -1,5 +1,31 @@
 package _315
 
+type BIT struct {
+    tree []int
+}
+
+func lowBit(x int) int {
+    return x & (-x)
+}
+
+func (b *BIT) getSum(index int) int {
+    index += 1
+    result := 0
+    for index > 0 {
+        result += b.tree[index]
+        index -= lowBit(index)
+    }
+    return result
+}
+
+func (b *BIT) add(index, number int) {
+    index += 1
+    for index < len(b.tree) {
+        b.tree[index] += number
+        index += lowBit(index)
+    }
+}
+
 func qsort(nums []int) {
     if len(nums) <= 1 {
         return
@@ -8,62 +34,28 @@ func qsort(nums []int) {
     for i := 1; i < len(nums); i++ {
         if nums[i] < nums[0] {
             pivot++
-            nums[i], nums[pivot] = nums[pivot], nums[i]
+            nums[pivot], nums[i] = nums[i], nums[pivot]
         }
     }
-    nums[0], nums[pivot] = nums[pivot], nums[0]
+    nums[pivot], nums[0] = nums[0], nums[pivot]
     qsort(nums[:pivot])
     qsort(nums[pivot+1:])
 }
 
-type segTree struct {
-    tree [] int
-    n    int
-}
-
-func (st *segTree) add(index int, number int) {
-    index += st.n
-    for index > 0 {
-        st.tree[index] += number
-        index = index >> 1
-    }
-}
-
-func (st *segTree) sum(left int, right int) int {
-    left += st.n
-    right += st.n
-    sum := 0
-    for left < right {
-        if left&1 == 1 {
-            sum += st.tree[left]
-            left++
-        }
-        if right&1 == 1 {
-            right--
-            sum += st.tree[right]
-        }
-        left = left >> 1
-        right = right >> 1
-    }
-    return sum
-}
-
 func countSmaller(nums []int) []int {
-    sorted := make([]int, len(nums))
-    copy(sorted, nums)
-    qsort(sorted)
-    ranks := make(map[int]int, len(sorted))
-    for i := range sorted {
-        ranks[sorted[i]] = i
-    }
-    for i := range nums {
-        nums[i] = ranks[nums[i]]
-    }
-    st := segTree{tree: make([]int, len(nums)*2), n: len(nums)}
     result := make([]int, len(nums))
+    numsSort := make([]int, len(nums))
+    copy(numsSort, nums)
+    qsort(numsSort)
+    ranks := make(map[int]int)
+    for i := 0; i < len(numsSort); i++ {
+        ranks[numsSort[i]] = i
+    }
+    b := BIT{tree: make([]int, len(nums)+1)}
     for i := len(nums) - 1; i >= 0; i-- {
-        st.add(nums[i], 1)
-        result[i] = st.sum(0, nums[i])
+        rank := ranks[nums[i]]
+        b.add(rank, 1)
+        result[i] = b.getSum(rank - 1)
     }
     return result
 }
