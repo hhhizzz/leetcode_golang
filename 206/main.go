@@ -11,14 +11,14 @@ func reverseList(head *ListNode) *ListNode {
     }
     //注意pre应该是nil
     var pre *ListNode
-    current, next := head, head.Next
-    for current != nil {
+    current := head
+
+    for next := head.Next; current.Next != nil; next = current.Next {
         current.Next = pre
         pre = current
         current = next
-        if current != nil {
-            next = current.Next
-        }
     }
+    current.Next = pre
+    pre = current
     return pre
 }
