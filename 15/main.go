@@ -4,54 +4,43 @@ func qsort(nums []int) {
     if len(nums) <= 1 {
         return
     }
-    pivotIndex := 0
+    pivot := 0
     for i := 1; i < len(nums); i++ {
         if nums[i] < nums[0] {
-            pivotIndex++
-            nums[pivotIndex], nums[i] = nums[i], nums[pivotIndex]
+            pivot++
+            nums[i], nums[pivot] = nums[pivot], nums[i]
         }
     }
-    nums[0], nums[pivotIndex] = nums[pivotIndex], nums[0]
-    qsort(nums[:pivotIndex])
-    qsort(nums[pivotIndex+1:])
+    nums[pivot], nums[0] = nums[0], nums[pivot]
+    qsort(nums[:pivot])
+    qsort(nums[pivot+1:])
 }
 
+//方案1，使用map
 func threeSum(nums []int) [][]int {
-    if len(nums) < 3 {
-        return make([][]int, 0)
-    }
+    var result [][]int
+
     qsort(nums)
-    res := make(map[[3]int]bool)
-    for i, v := range nums[:len(nums)-2] {
-        if i >= 1 && nums[i] == nums[i-1] {
+
+    res := map[[3]int]bool{}
+
+    for i := 0; i < len(nums); i++ {
+        if i > 0 && nums[i] == nums[i-1] {
             continue
         }
-        l := i + 1
-        r := len(nums) - 1
-        for l < r {
-            sum := v + nums[l] + nums[r]
-            if sum == 0 {
-                res[[3]int{v, nums[l], nums[r]}] = true
-                for l < r && nums[l] == nums[l+1] {
-                    l++
+        m := map[int]bool{}
+        for j := i + 1; j < len(nums); j++ {
+            if _, ok := m[nums[j]]; ok {
+                array := [3]int{nums[i], -nums[i]-nums[j], nums[j]}
+                if _, ok := res[array]; !ok {
+                    result = append(result, array[:])
+                    res[array] = true
                 }
-                for l < r && nums[r] == nums[r-1] {
-                    r--
-                }
-                l++
-                r--
-            } else if sum > 0 {
-                r--
-            } else if sum < 0 {
-                l++
+            } else {
+                m[-nums[i]-nums[j]] = true
             }
         }
-    }
-    var result [][]int
-    for k := range res {
-        slice := make([]int, 3)
-        copy(slice, k[:])
-        result = append(result, slice)
+
     }
     return result
 }
