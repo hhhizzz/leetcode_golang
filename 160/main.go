@@ -7,7 +7,6 @@ type ListNode struct {
 
 //方法是首先计算一个链表比另外一个长多少，然后长的那个先前进那个长度再同时前进看什么时候相遇
 func getIntersectionNode(headA, headB *ListNode) *ListNode {
-    length := 0
     currentA := headA
     currentB := headB
     for currentA != nil && currentB != nil {
@@ -17,24 +16,18 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
         currentA = currentA.Next
         currentB = currentB.Next
     }
-    longerList := currentA
-    if currentA == nil {
-        temp := headA
-        headA = headB
-        headB = temp
-        longerList = currentB
-    }
-    for longerList != nil {
-        longerList = longerList.Next
-        length++
-    }
 
-    currentA = headA
-    currentB = headB
-    for length != 0 {
-        currentA = currentA.Next
-        length--
+    if currentB != nil {
+        currentA, currentB = currentB, currentA
+        headA, headB = headB, headA
     }
+    //currentA is longer
+    for currentA != nil {
+        currentA = currentA.Next
+        headA = headA.Next
+    }
+    currentB = headB
+    currentA = headA
     for currentA != currentB {
         currentA = currentA.Next
         currentB = currentB.Next
