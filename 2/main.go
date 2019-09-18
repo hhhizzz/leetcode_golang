@@ -12,36 +12,52 @@ type ListNode struct {
     Next *ListNode
 }
 
+//新加了一个prev节点用于保持l1节点是更长的
 func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
-    sum := 0
-    node1, node2 := l1, l2
-    var node1Last *ListNode
-    for ; node1 != nil && node2 != nil; node1, node2 = node1.Next, node2.Next {
-        node1.Val = node1.Val + node2.Val + sum
-        if node1.Val >= 10 {
-            node1.Val -= 10
-            sum = 1
-        } else {
-            sum = 0
-        }
-        node1Last = node1
+
+    var prev1 *ListNode
+    node1 := l1
+    node2 := l2
+
+    if l1 == nil {
+        return l2
     }
-    if node2 != nil {
-        node1Last.Next = node2
+    if l2 == nil {
+        return l1
+    }
+
+    carry := 0
+    for node1 != nil && node2 != nil {
+        newVal := node1.Val + node2.Val + carry
+        carry = newVal / 10
+        newVal = newVal % 10
+
+        node1.Val = newVal
+
+        prev1 = node1
+        node1 = node1.Next
+        node2 = node2.Next
+    }
+
+    //这里有一个警告，说明golang还不够智能，如果能达到这里上一个循环至少会执行一次这个prev必然不可能为nil
+    if node1 == nil {
+        prev1.Next = node2
         node1 = node2
     }
-    for ; node1 != nil && sum != 0; node1 = node1.Next {
-        node1.Val += sum
-        if node1.Val >= 10 {
-            node1.Val -= 10
-            sum = 1
-        } else {
-            sum = 0
-        }
-        node1Last = node1
+
+    for node1 != nil {
+        newVal := node1.Val + carry
+        carry = newVal / 10
+        newVal = newVal % 10
+
+        node1.Val = newVal
+
+        prev1 = node1
+        node1 = node1.Next
     }
-    if sum != 0 {
-        node1Last.Next = &ListNode{Val: 1}
+    if carry != 0 && prev1 != nil {
+        prev1.Next = &ListNode{Val: carry}
     }
+
     return l1
 }
