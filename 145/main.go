@@ -16,7 +16,7 @@ func postorderTraversal(root *TreeNode) []int {
 
     current := root
     for len(stack) != 0 {
-        //首先判断下一个要取的节点不是当前节点父节点
+        //首先判断下一个要取的节点不是当前节点父节点，由于放入栈的方式，每个节点的下一个节点要么是它的右兄弟，要么是父亲节点
         if stack[len(stack)-1].Left != current && stack[len(stack)-1].Right != current {
             //取出下一个节点，按照次序找到它左侧最深节点放入栈中
             current = stack[len(stack)-1]
