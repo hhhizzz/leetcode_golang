@@ -5,13 +5,6 @@ type node struct {
     children []*node
 }
 
-func killNodes(current *node, result *[]int) {
-    *result = append(*result, current.id)
-    for _, child := range current.children {
-        killNodes(child, result)
-    }
-}
-
 func killProcess(pid []int, ppid []int, kill int) []int {
     root := node{id: 0, children: []*node{}}
     nodes := map[int]*node{0: &root}
@@ -26,7 +19,15 @@ func killProcess(pid []int, ppid []int, kill int) []int {
         parentNode.children = append(parentNode.children, childrenNode)
     }
     killNode := nodes[kill]
+    stack := []*node{killNode}
     var result []int
-    killNodes(killNode, &result)
+    for len(stack) != 0 {
+        current := stack[len(stack)-1]
+        stack = stack[:len(stack)-1]
+        result = append(result, current.id)
+        for _, child := range current.children {
+            stack = append(stack, child)
+        }
+    }
     return result
 }
