@@ -2,25 +2,20 @@ package _131
 
 var dp [][]bool
 
-func solve(start int, s string) [][]string {
-    var result [][]string
-
+func dfs(start int, temp *[]string, result *[][]string, s string) {
     if start == len(s) {
-        result = append(result, []string{})
-        return result
+        newTemp := make([]string, len(*temp))
+        copy(newTemp, *temp)
+        *result = append(*result, newTemp)
+        return
     }
-
     for i := start; i < len(s); i++ {
-        if !dp[start][i] {
-            continue
-        }
-        next := solve(i+1, s)
-        for n := range next {
-            next[n] = append([]string{s[start : i+1]}, next[n]...)
-            result = append(result, next[n])
+        if dp[start][i] {
+            *temp = append(*temp, s[start:i+1])
+            dfs(i+1, temp, result, s)
+            *temp = (*temp)[:len(*temp)-1]
         }
     }
-    return result
 }
 
 func partition(s string) [][]string {
@@ -40,5 +35,9 @@ func partition(s string) [][]string {
             }
         }
     }
-    return solve(0, s)
+    var result [][]string
+    var temp []string
+
+    dfs(0, &temp, &result, s)
+    return result
 }

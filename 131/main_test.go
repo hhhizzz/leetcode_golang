@@ -6,6 +6,6 @@ import (
 )
 
 func TestPartition(t *testing.T) {
-    strings := partition("abbab")
+    strings := partition("aab")
     fmt.Println(strings)
 }
