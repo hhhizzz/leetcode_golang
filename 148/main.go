@@ -6,30 +6,71 @@ type ListNode struct {
 }
 
 func sortList(head *ListNode) *ListNode {
-    if head == nil || head.Next == nil {
+    length := 0
+    current := head
+    for current != nil {
+        length++
+        current = current.Next
+    }
+    if length < 2 {
         return head
     }
-    preSlow, slow, fast := head, head, head
-    for fast != nil && fast.Next != nil {
-        preSlow = slow
-        slow = slow.Next
-        fast = fast.Next.Next
+
+    for step := 1; step < length; step *= 2 {
+        current = head
+        pre := &ListNode{Next: current}
+        for current != nil {
+            left := current
+            right := cut(current, step)
+            current = cut(right, step)
+            next := merge(left, right)
+            if pre.Next == head {
+                pre.Next = next
+                head = next
+            } else {
+                pre.Next = next
+            }
+            for pre.Next != nil {
+                pre = pre.Next
+            }
+        }
     }
-    preSlow.Next = nil
-    return merge(sortList(head), sortList(slow))
+    return head
 }
-func merge(l1 *ListNode, l2 *ListNode) *ListNode {
-    if l1 == nil {
-        return l2
+
+func merge(a *ListNode, b *ListNode) *ListNode {
+    current := &ListNode{}
+    result := current
+    for a != nil && b != nil {
+        if a.Val < b.Val {
+            current.Next = a
+            a = a.Next
+        } else {
+            current.Next = b
+            b = b.Next
+        }
+        current = current.Next
     }
-    if l2 == nil {
-        return l1
-    }
-    if l1.Val < l2.Val {
-        l1.Next = merge(l1.Next, l2)
-        return l1
+    if a != nil {
+        current.Next = a
     } else {
-        l2.Next = merge(l2.Next, l1)
-        return l2
+        current.Next = b
     }
+    return result.Next
+}
+
+func cut(l *ListNode, n int) *ListNode {
+    for i := 0; i < n; i++ {
+        if l != nil {
+            if i == n-1 {
+                temp := l.Next
+                l.Next = nil
+                l = temp
+            } else {
+                l = l.Next
+            }
+
+        }
+    }
+    return l
 }

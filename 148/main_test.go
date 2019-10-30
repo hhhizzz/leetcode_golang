@@ -1,6 +1,7 @@
 package _148
 
 import (
+    "fmt"
     "strconv"
     "testing"
 )
@@ -41,6 +42,13 @@ func toStr(l *ListNode) string {
     }
     result += "]"
     return result
+}
+
+func TestMerge(T *testing.T) {
+    l1 := makeListNode([]int{3, 4, 5})
+    l2 := makeListNode([]int{1, 2, 4})
+    l3 := merge(l1, l2)
+    fmt.Println(toStr(l3))
 }
 
 func TestSortList(T *testing.T) {
