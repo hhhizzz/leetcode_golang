@@ -35,7 +35,6 @@ func lengthOfLIS(nums []int) int {
         if pos >= len(lis) {
             lis = append(lis, nums[i])
         } else {
-            lis := lis[:pos+1]
             lis[pos] = nums[i]
         }
         result = max(result, len(lis))
