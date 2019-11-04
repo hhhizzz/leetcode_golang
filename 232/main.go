@@ -18,7 +18,8 @@ func (this *MyQueue) Push(x int) {
 /** Removes the element from in front of queue and returns that element. */
 func (this *MyQueue) Pop() int {
     if len(this.stack2) == 0 {
-        for i := 0; i < len(this.stack1); i++ {
+        length := len(this.stack1)
+        for i := 0; i < length; i++ {
             item := this.stack1[len(this.stack1)-1]
             this.stack1 = this.stack1[:len(this.stack1)-1]
             this.stack2 = append(this.stack2, item)
@@ -32,7 +33,8 @@ func (this *MyQueue) Pop() int {
 /** Get the front element. */
 func (this *MyQueue) Peek() int {
     if len(this.stack2) == 0 {
-        for i := 0; i < len(this.stack1); i++ {
+        length := len(this.stack1)
+        for i := 0; i < length; i++ {
             item := this.stack1[len(this.stack1)-1]
             this.stack1 = this.stack1[:len(this.stack1)-1]
             this.stack2 = append(this.stack2, item)
