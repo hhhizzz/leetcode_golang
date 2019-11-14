@@ -10,7 +10,7 @@ func TestLRU(t *testing.T) {
     obj.Put(3, 3)
     println(obj.Get(2))
     obj.Put(4, 4)
-    obj.Put(2, 2)
+    //obj.Put(2, 2)
     println(obj.Get(1))
     println(obj.Get(3))
     println(obj.Get(4))

@@ -1,82 +1,54 @@
 package _146
 
-type ListNode struct {
-    key   int
-    value int
-    last  *ListNode
-    next  *ListNode
-}
+import (
+    "container/list"
+    "fmt"
+)
 
 type LRUCache struct {
+    data     map[int]*list.Element
+    l        *list.List
     capacity int
-    size     int
-    index    map[int]*ListNode
-    head     *ListNode
-    tail     *ListNode
+    length   int
+}
+
+type keyValue struct {
+    key   int
+    value int
 }
 
 func Constructor(capacity int) LRUCache {
-    return LRUCache{capacity: capacity, index: map[int]*ListNode{}}
-}
-
-func (this *LRUCache) find(key int) *ListNode {
-    if current, ok := this.index[key]; ok {
-        if current.key == key {
-            if current == this.head {
-                return current
-            }
-            if this.tail == current {
-                this.tail = current.last
-            }
-            current.last.next = current.next
-            if current.next != nil {
-                current.next.last = current.last
-            }
-            current.next = this.head
-            this.head.last = current
-            this.head = current
-
-            current.last = nil
-
-            return current
-        }
-        current = current.next
-    }
-    return nil
+    return LRUCache{data: map[int]*list.Element{}, l: list.New(), capacity: capacity, length: 0}
 }
 
 func (this *LRUCache) Get(key int) int {
-    result := this.find(key)
-    if result != nil {
-        return result.value
+    if ele, ok := this.data[key]; ok {
+        kv := ele.Value.(keyValue)
+        if ele != this.l.Front() {
+            this.l.MoveToFront(ele)
+        }
+        return kv.value
     }
     return -1
 }
 
 func (this *LRUCache) Put(key int, value int) {
-    result := this.find(key)
-    if result == nil {
-        if this.head == nil {
-            this.head = &ListNode{key: key, value: value}
-            this.tail = this.head
-            this.size = 1
-        } else {
-            newNode := ListNode{key: key, value: value, next: this.head}
-            this.head.last = &newNode
-            this.head = &newNode
-            this.size++
-            if this.size > this.capacity {
-                delete(this.index, this.tail.key)
-                if this.tail.last != nil {
-                    this.tail = this.tail.last
-                    this.tail.next = nil
-                }
-                this.size--
-            }
+    if ele, ok := this.data[key]; ok {
+        ele.Value = keyValue{key: key, value: value}
+        if ele != this.l.Front() {
+            this.l.MoveToFront(ele)
         }
-        this.index[key] = this.head
     } else {
-        result.value = value
+        if this.length >= this.capacity {
+            ele := this.l.Back()
+            this.l.Remove(ele)
+            fmt.Printf("envicts: %d\n", ele.Value.(keyValue).value)
+            delete(this.data, ele.Value.(keyValue).key)
+            this.length--
+        }
+        ele := this.l.PushFront(keyValue{key: key, value: value})
+        this.data[key] = ele
+        this.length++
     }
 }
 
