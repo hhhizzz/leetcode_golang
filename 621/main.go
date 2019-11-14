@@ -2,6 +2,7 @@ package _621
 
 import (
     "container/heap"
+    "sort"
 )
 
 type task struct {
@@ -39,7 +40,7 @@ func (t *taskHeap) Pop() interface{} {
     return item
 }
 
-func leastInterval(tasks []byte, n int) int {
+func leastInterval1(tasks []byte, n int) int {
     tHeap := taskHeap{array: []task{}}
     heap.Init(&tHeap)
     m := map[byte]int{}
@@ -66,4 +67,31 @@ func leastInterval(tasks []byte, n int) int {
         time++
     }
     return time
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
+}
+
+func leastInterval(tasks []byte, n int) int {
+    m := make([]int, 26)
+    for _, task := range tasks {
+        m[task-'A']++
+    }
+    sort.Ints(m)
+    maxVal := m[25] - 1
+    slotLeft := maxVal * n
+    for i := 24; i >= 0; i-- {
+        if m[i] != 0 {
+            slotLeft -= min(maxVal, m[i])
+        }
+    }
+    if slotLeft <= 0 {
+        return len(tasks)
+    } else {
+        return slotLeft + len(tasks)
+    }
 }
