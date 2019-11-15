@@ -69,3 +69,27 @@ func QuickSort2(num []int) {
     wg.Add(1)
     quickSort2(num, &wg)
 }
+
+func mergerSort(num []int) {
+    if len(num) <= 1 {
+        return
+    }
+    mid := len(num) >> 1
+    mergerSort(num[:mid])
+    mergerSort(num[mid:])
+    left := make([]int, mid)
+    right := make([]int, len(num)-mid)
+    copy(left, num[:mid])
+    copy(right, num[mid:])
+    li := 0
+    ri := 0
+    for i := 0; i < len(num); i++ {
+        if li < len(left) && (ri == len(right) || left[li] <= right[ri]) {
+            num[i] = left[li]
+            li++
+        } else {
+            num[i] = right[ri]
+            ri++
+        }
+    }
+}
