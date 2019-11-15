@@ -1,73 +1,58 @@
 package _212
 
 type Trie struct {
-    data   map[byte]*Trie
-    word   string
-    isWord bool
+    word string
+    char rune
+    next map[rune]*Trie
 }
 
-func construct(words *[]string) *Trie {
-    root := &Trie{data: map[byte]*Trie{}}
-    for _, word := range *words {
-        wordArray := []byte(word)
-        current := root
-        for _, c := range wordArray {
-            if next, ok := current.data[c]; ok {
-                current = next
-            } else {
-                current.data[c] = &Trie{data: map[byte]*Trie{}}
-                current = current.data[c]
-            }
-        }
-        current.isWord = true
-        current.word = word
-    }
-    return root
-}
-
-func search(board *[][]byte, visited *[][]bool, i, j int, current *Trie, m map[string]bool) {
-    if i < 0 || j < 0 || i >= len(*board) || j >= len((*board)[i]) {
+func dfs(board [][]byte, visited [][]bool, i, j int, result *[]string, current *Trie) {
+    if i < 0 || j < 0 || i >= len(board) || j >= len(board[i]) {
         return
     }
-    if (*visited)[i][j] {
+    if visited[i][j] {
         return
     }
-
-    if next, ok := current.data[(*board)[i][j]]; ok {
-        (*visited)[i][j] = true
-        if next.isWord {
-            m[next.word] = true
+    if next, ok := current.next[rune(board[i][j])]; !ok {
+        return
+    } else {
+        if next.word != "" {
+            *result = append(*result, next.word)
+            next.word = ""
         }
-        nextI := i
-        nextJ := j
-        search(board, visited, nextI-1, nextJ, next, m)
-        search(board, visited, nextI, nextJ+1, next, m)
-        search(board, visited, nextI+1, nextJ, next, m)
-        search(board, visited, nextI, nextJ-1, next, m)
+        visited[i][j] = true
+        dfs(board, visited, i+1, j, result, next)
+        dfs(board, visited, i, j+1, result, next)
+        dfs(board, visited, i-1, j, result, next)
+        dfs(board, visited, i, j-1, result, next)
+        visited[i][j] = false
     }
-    (*visited)[i][j] = false
 }
 
 func findWords(board [][]byte, words []string) []string {
-    trie := construct(&words)
+    root := &Trie{"", 0, map[rune]*Trie{}}
+    for _, word := range words {
+        current := root
+        for _, c := range word {
+            if next, ok := current.next[c]; ok {
+                current = next
+            } else {
+                next = &Trie{"", c, map[rune]*Trie{}}
+                current.next[c] = next
+                current = next
+            }
+        }
+        current.word = word
+    }
     visited := make([][]bool, len(board))
-    for i := range visited {
+    for i := 0; i < len(board); i++ {
         visited[i] = make([]bool, len(board[i]))
     }
-    result := make(map[string]bool)
-    for i := range board {
-        for j := range board[i] {
-            for v := range visited {
-                for u := range visited[v] {
-                    visited[v][u] = false
-                }
-            }
-            search(&board, &visited, i, j, trie, result)
+    var result []string
+    for i := 0; i < len(board); i++ {
+        for j := 0; j < len(board[i]); j++ {
+            dfs(board, visited, i, j, &result, root)
         }
     }
-    var resultArray []string
-    for k := range result {
-        resultArray = append(resultArray, k)
-    }
-    return resultArray
+    return result
 }
