@@ -1,10 +1,32 @@
 package _90
 
-//巧用异或算法符合交换律和结合律的特性
-func singleNumber(nums []int) int {
-    a := 0
-    for _, nums := range nums {
-        a ^= nums
+import "sort"
+
+func dfs(nums []int, left int, current []int, result *[][]int) {
+    if left > len(nums) {
+        return
     }
-    return a
+    if left == 0 {
+        newArray := make([]int, len(current))
+        copy(newArray, current)
+        *result = append(*result, newArray)
+    } else {
+        for i := 0; i < len(nums); i++ {
+            if i != 0 && nums[i-1] == nums[i] {
+                continue
+            }
+            current = append(current, nums[i])
+            dfs(nums[i+1:], left-1, current, result)
+            current = current[:len(current)-1]
+        }
+    }
+}
+
+func subsetsWithDup(nums []int) [][]int {
+    result := [][]int{{}}
+    sort.Ints(nums)
+    for length := 1; length <= len(nums); length++ {
+        dfs(nums, length, []int{}, &result)
+    }
+    return result
 }
