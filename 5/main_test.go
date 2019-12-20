@@ -6,13 +6,13 @@ import (
 
 func TestLongestPalindrome(t *testing.T) {
 	cases := []string{
-		//"babad",
-		//"cbbd",
+		"babad",
+		"cbbd",
 		"aaabaaaa",
 	}
 	expects := []string{
-		//"bab",
-		//"bb",
+		"bab",
+		"bb",
 		"aaabaaa",
 	}
 	for i, cas := range cases {
