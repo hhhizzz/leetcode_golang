@@ -36,7 +36,7 @@ func recoverTree1(root *TreeNode) {
     inorderFill(root, array, &iterator)
 }
 
-//方法二：Morris方法中序遍历+冒泡
+//方法二：Morris方法中序遍历
 func recoverTree(root *TreeNode) {
     current := root
     var prevent *TreeNode
