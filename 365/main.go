@@ -7,10 +7,13 @@ func gcd(a, b int) int {
     if b == 0 {
         return 0
     }
-    if a%b == 0 {
-        return b
+    for a%b != 0 {
+        a, b = a, a%b
+        if a < b {
+            a, b = b, a
+        }
     }
-    return gcd(b, a-b)
+    return b
 }
 
 func canMeasureWater(x int, y int, z int) bool {
@@ -18,7 +21,6 @@ func canMeasureWater(x int, y int, z int) bool {
         return false
     }
     xy := gcd(x, y)
-    //fmt.Println(xy)
     if z == 0 {
         return true
     } else if xy == 0 {
