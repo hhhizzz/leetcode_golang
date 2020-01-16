@@ -1,12 +1,9 @@
 package _369
 
-/**
- * Definition for singly-linked list.
- * type ListNode struct {
- *     Val int
- *     Next *ListNode
- * }
- */
+type ListNode struct {
+    Val  int
+    Next *ListNode
+}
 
 func reverse(head *ListNode) *ListNode {
     if head == nil || head.Next == nil {
