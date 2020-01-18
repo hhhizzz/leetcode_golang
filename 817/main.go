@@ -29,4 +29,4 @@ func numComponents(head *ListNode, G []int) int {
         result++
     }
     return result
-}¬
+}
