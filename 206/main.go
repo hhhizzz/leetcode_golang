@@ -5,19 +5,26 @@ type ListNode struct {
     Next *ListNode
 }
 
+//非递归版本
 func reverseList(head *ListNode) *ListNode {
-    if head==nil{
+    var prev *ListNode = nil
+    var current *ListNode = head
+
+    for current != nil {
+        next := current.Next
+        current.Next = prev
+        prev, current = current, next
+    }
+    return prev
+}
+
+//递归版本
+func reverseList1(head *ListNode) *ListNode {
+    if head == nil || head.Next == nil {
         return head
     }
-    var pre *ListNode
-    current := head
-    var next *ListNode
-
-    for current != nil{
-        next = current.Next
-        current.Next = pre
-        pre = current
-        current = next
-    }
-    return pre
+    last := reverseList(head.Next)
+    head.Next.Next = head
+    head.Next = nil
+    return last
 }
