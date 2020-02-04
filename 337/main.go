@@ -12,25 +12,19 @@ func max(a, b int) int {
     }
     return b
 }
-func dfs(root *TreeNode, result *int) (maxMe, maxNoMe int) {
-    maxMe = 0
-    maxNoMe = 0
-    if root == nil {
-        return
-    }
-    left1, left2 := dfs(root.Left, result)
-    right1, right2 := dfs(root.Right, result)
-    maxMe = root.Val + left2 + right2
-    maxNoMe = max(left1, left2) + max(right1, right2)
-
-    *result = max(*result, maxMe)
-    *result = max(*result, maxNoMe)
-
-    return
-}
 
 func rob(root *TreeNode) int {
-    result := 0
-    dfs(root, &result)
-    return result
+    rob, notRob := helper(root)
+    return max(rob, notRob)
+}
+
+//第一个返回值表示抢root，第二个表示不抢
+func helper(root *TreeNode) (int, int) {
+    if root == nil {
+        return 0, 0
+    }
+    leftRob, leftNotRob := helper(root.Left)
+    rightRob, rightNotRob := helper(root.Right)
+
+    return root.Val + leftNotRob + rightNotRob, max(leftRob, leftNotRob) + max(rightRob, rightNotRob)
 }
