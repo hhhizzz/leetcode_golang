@@ -1,6 +1,6 @@
 package _169
 
-func majorityElement(nums []int) int {
+func majorityElement1(nums []int) int {
     m := map[int]int{}
     half := len(nums) >> 1
 
@@ -15,4 +15,20 @@ func majorityElement(nums []int) int {
         }
     }
     return -1
+}
+
+func majorityElement(nums []int) int {
+    count := 0
+    current := nums[0]
+    for i := 0; i < len(nums); i++ {
+        if current == nums[i] {
+            count++
+        } else {
+            count--
+        }
+        if count == 0 {
+            current = nums[i+1]
+        }
+    }
+    return current
 }
