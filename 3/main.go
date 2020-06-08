@@ -24,3 +24,20 @@ func lengthOfLongestSubstring(s string) int {
 	}
 	return result
 }
+
+func lengthOfLongestSubstring2(s string) int {
+	// m 表示当前字符串的内容
+	m := map[byte]int{}
+	res := 0
+	// i, j同方法一l, r
+	for i, j := 0, 0; j < len(s); j++ {
+		m[s[j]] += 1
+		// 如果发现有重复，收缩i直到没有重复为止
+		for m[s[j]] > 1 {
+			m[s[i]]--
+			i += 1
+		}
+		res = max(res, j-i+1)
+	}
+	return res
+}
