@@ -1,10 +1,10 @@
 package _188
 
 import (
-    "fmt"
-    "testing"
+	"fmt"
+	"testing"
 )
 
 func TestMaxProfit(t *testing.T) {
-    fmt.Println(maxProfit(2,[]int{2,4,1}))
+	fmt.Println(maxProfit(2, []int{2, 4, 1}))
 }

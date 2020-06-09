@@ -1,32 +1,32 @@
 package _328
 
 type ListNode struct {
-    Val  int
-    Next *ListNode
+	Val  int
+	Next *ListNode
 }
 
 func oddEvenList(head *ListNode) *ListNode {
-    oddList := &ListNode{Val: 0, Next: nil}
-    evenList := &ListNode{Val: 0, Next: nil}
+	oddList := &ListNode{Val: 0, Next: nil}
+	evenList := &ListNode{Val: 0, Next: nil}
 
-    var oddCurrent = oddList
-    var evenCurrent = evenList
+	var oddCurrent = oddList
+	var evenCurrent = evenList
 
-    current := head
+	current := head
 
-    odd := true
-    for current != nil {
-        if odd {
-            oddCurrent.Next = current
-            oddCurrent = current
-        } else {
-            evenCurrent.Next = current
-            evenCurrent = current
-        }
-        odd = !odd
-        current = current.Next
-    }
-    oddCurrent.Next = evenList.Next
-    evenCurrent.Next = nil
-    return oddList.Next
+	odd := true
+	for current != nil {
+		if odd {
+			oddCurrent.Next = current
+			oddCurrent = current
+		} else {
+			evenCurrent.Next = current
+			evenCurrent = current
+		}
+		odd = !odd
+		current = current.Next
+	}
+	oddCurrent.Next = evenList.Next
+	evenCurrent.Next = nil
+	return oddList.Next
 }

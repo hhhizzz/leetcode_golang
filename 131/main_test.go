@@ -1,11 +1,11 @@
 package _131
 
 import (
-    "fmt"
-    "testing"
+	"fmt"
+	"testing"
 )
 
 func TestPartition(t *testing.T) {
-    strings := partition("aab")
-    fmt.Println(strings)
+	strings := partition("aab")
+	fmt.Println(strings)
 }

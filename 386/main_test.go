@@ -1,11 +1,11 @@
 package _386
 
 import (
-    "fmt"
-    "testing"
+	"fmt"
+	"testing"
 )
 
 func TestLexicalOrder(t *testing.T) {
-    order := lexicalOrder(13)
-    fmt.Println(order)
+	order := lexicalOrder(13)
+	fmt.Println(order)
 }

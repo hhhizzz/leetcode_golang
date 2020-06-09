@@ -1,11 +1,11 @@
 package _634
 
 import (
-    "fmt"
-    "testing"
+	"fmt"
+	"testing"
 )
 
 func TestFindDerangement(t *testing.T) {
-    derangement := findDerangement(13)
-    fmt.Println(derangement)
+	derangement := findDerangement(13)
+	fmt.Println(derangement)
 }

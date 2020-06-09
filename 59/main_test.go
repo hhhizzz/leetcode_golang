@@ -1,11 +1,11 @@
 package _59
 
 import (
-    "fmt"
-    "testing"
+	"fmt"
+	"testing"
 )
 
 func TestGenerateMatrix(t *testing.T) {
-    matrix := generateMatrix(4)
-    fmt.Println(matrix)
+	matrix := generateMatrix(4)
+	fmt.Println(matrix)
 }

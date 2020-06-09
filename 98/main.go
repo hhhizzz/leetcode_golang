@@ -9,24 +9,24 @@ package _98
 * }
  */
 type TreeNode struct {
-    Val   int
-    Left  *TreeNode
-    Right *TreeNode
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
 }
 
 func isValid(root *TreeNode, min, max *int) bool {
-    if root == nil {
-        return true
-    }
-    if min != nil && root.Val <= *min {
-        return false
-    }
-    if max != nil && root.Val >= *max {
-        return false
-    }
-    return isValid(root.Left, nil, &root.Val) && isValid(root.Right, &root.Val, nil)
+	if root == nil {
+		return true
+	}
+	if min != nil && root.Val <= *min {
+		return false
+	}
+	if max != nil && root.Val >= *max {
+		return false
+	}
+	return isValid(root.Left, nil, &root.Val) && isValid(root.Right, &root.Val, nil)
 }
 
 func isValidBST(root *TreeNode) bool {
-    return isValid(root, nil, nil)
+	return isValid(root, nil, nil)
 }

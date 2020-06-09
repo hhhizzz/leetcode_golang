@@ -1,10 +1,10 @@
 package _39
 
 import (
-    "fmt"
-    "testing"
+	"fmt"
+	"testing"
 )
 
 func TestCombinationSum(t *testing.T) {
-    fmt.Println(combinationSum([]int{2,3,7},7))
+	fmt.Println(combinationSum([]int{2, 3, 7}, 7))
 }

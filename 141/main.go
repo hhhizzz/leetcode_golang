@@ -8,23 +8,23 @@ package _141
  * }
  */
 type ListNode struct {
-    Val  int
-    Next *ListNode
+	Val  int
+	Next *ListNode
 }
 
 func hasCycle(head *ListNode) bool {
-    slow := head
-    fast := head
-    for fast != nil {
-        fast = fast.Next
-        slow = slow.Next
-        if fast == nil {
-            return false
-        }
-        fast = fast.Next
-        if slow == fast {
-            return true
-        }
-    }
-    return false
+	slow := head
+	fast := head
+	for fast != nil {
+		fast = fast.Next
+		slow = slow.Next
+		if fast == nil {
+			return false
+		}
+		fast = fast.Next
+		if slow == fast {
+			return true
+		}
+	}
+	return false
 }

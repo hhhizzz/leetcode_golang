@@ -1,11 +1,11 @@
 package _151
 
 import (
-    "fmt"
-    "testing"
+	"fmt"
+	"testing"
 )
 
 func TestReverseWords(t *testing.T) {
-    words := reverseWords("  hello  world!  ")
-    fmt.Println(words)
+	words := reverseWords("  hello  world!  ")
+	fmt.Println(words)
 }
