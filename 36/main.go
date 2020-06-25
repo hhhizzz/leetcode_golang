@@ -1,65 +1,47 @@
 package _36
 
-func isValidSudoku(board [][]byte) bool {
-	col := make([]bool, 9)
-	row := make([]bool, 9)
-	block := make([]bool, 9)
-	//check if row is valid
+func isValid(array []byte) bool {
+	m := make([]bool, 10)
 	for i := 0; i < 9; i++ {
-		row = make([]bool, 9)
-		for j := 0; j < 9; j++ {
-			numberByte := board[i][j]
-			var number byte
-			if numberByte == '.' {
-				continue
-			} else {
-				number = numberByte - '0'
-			}
-			if exist := row[number-1]; exist {
+		if array[i] == '.' {
+			continue
+		} else {
+			number := array[i] - '0'
+			if m[number] {
 				return false
-			} else {
-				row[number-1] = true
 			}
+			m[number] = true
 		}
 	}
-	//check if col is valid
+	return true
+}
+
+func isValidSudoku(board [][]byte) bool {
+	for i := 0; i < 9; i++ {
+		if !isValid(board[i]) {
+			return false
+		}
+	}
 	for j := 0; j < 9; j++ {
-		col = make([]bool, 9)
+		temp := make([]byte, 9)
 		for i := 0; i < 9; i++ {
-			numberByte := board[i][j]
-			var number byte
-			if numberByte == '.' {
-				continue
-			} else {
-				number = numberByte - '0'
-			}
-			if exist := col[number-1]; exist {
-				return false
-			} else {
-				col[number-1] = true
-			}
+			temp[i] = board[i][j]
+		}
+		if !isValid(temp) {
+			return false
 		}
 	}
-	//check if block is valid
-	for x := 0; x < 9; x += 3 {
-		for y := 0; y < 9; y += 3 {
-			block = make([]bool, 9)
-			for i := 0; i < 3; i++ {
-				for j := 0; j < 3; j++ {
-					numberByte := board[x+i][y+j]
-					var number byte
-					if numberByte == '.' {
-						continue
-					} else {
-						number = numberByte - '0'
-					}
-					if exist := block[number-1]; exist {
-						return false
-					} else {
-						block[number-1] = true
-					}
-				}
+	for k := 0; k < 9; k++ {
+		row := (k / 3) * 3
+		col := (k % 3) * 3
+		temp := make([]byte, 9)
+		for i := 0; i < 3; i++ {
+			for j := 0; j < 3; j++ {
+				temp[i*3+j] = board[row+i][col+j]
 			}
+		}
+		if !isValid(temp) {
+			return false
 		}
 	}
 	return true
