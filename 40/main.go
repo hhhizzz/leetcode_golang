@@ -1,60 +1,30 @@
 package _40
 
-var nums []int
+import "sort"
 
-var result [][]int
-var purpose int
-
-func dfs(i int, sum int, current *[]int) {
-	*current = append(*current, nums[i])
-	sum = sum + nums[i]
-	defer func() {
-		*current = (*current)[:len(*current)-1]
-		sum -= nums[i]
-	}()
-
-	if sum == purpose {
-		new := make([]int, len(*current))
-		copy(new, *current)
-		result = append(result, new)
-	} else if sum > purpose {
-		return
-	} else {
-		for j := i + 1; j < len(nums); j++ {
-			if j == i+1 || nums[j] != nums[j-1] {
-				dfs(j, sum, current)
-			}
-		}
-	}
-}
-
-func qsort(nums []int) {
-	if len(nums) <= 1 {
+func helper(candidates []int, target int, current []int, res *[][]int) {
+	if target == 0 {
+		temp := make([]int, len(current))
+		copy(temp, current)
+		*res = append(*res, temp)
 		return
 	}
-	pivot := 0
-	for i := 1; i < len(nums); i++ {
-		if nums[i] < nums[0] {
-			pivot++
-			nums[pivot], nums[i] = nums[i], nums[pivot]
-		}
+	if len(candidates) == 0 || target < 0 {
+		return
 	}
-	nums[0], nums[pivot] = nums[pivot], nums[0]
-	qsort(nums[:pivot])
-	qsort(nums[pivot+1:])
+	for i := 0; i < len(candidates); i++ {
+		if i != 0 && candidates[i] == candidates[i-1] {
+			continue
+		}
+		current = append(current, candidates[i])
+		helper(candidates[i+1:], target-candidates[i], current, res)
+		current = current[:len(current)-1]
+	}
 }
 
 func combinationSum2(candidates []int, target int) [][]int {
-	nums = candidates
-	result = make([][]int, 0)
-	purpose = target
-
-	qsort(nums)
-
-	for i := 0; i < len(nums); i++ {
-		if i == 0 || nums[i] != nums[i-1] {
-			dfs(i, 0, &[]int{})
-		}
-	}
-	return result
+	var res [][]int
+	sort.Ints(candidates)
+	helper(candidates, target, []int{}, &res)
+	return res
 }
