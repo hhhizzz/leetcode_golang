@@ -1,29 +1,26 @@
 package _39
 
-func dfs(result *[][]int, nums *[]int, current *[]int, index int, target int) {
-	defer func() {
-		if len(*current) >= 1 {
-			*current = (*current)[:len(*current)-1]
-		}
-	}()
+import "sort"
+
+func helper(candidates []int, target int, current []int, res *[][]int) {
 	if target == 0 {
-		r := make([]int, len(*current))
-		copy(r, *current)
-		*result = append(*result, r)
+		temp := make([]int, len(current))
+		copy(temp, current)
+		*res = append(*res, temp)
+		return
+	} else if target < 0 {
 		return
 	}
-	if target < 0 {
-		return
-	}
-	for i := index; i < len(*nums); i++ {
-		*current = append(*current, (*nums)[i])
-		dfs(result, nums, current, i, target-(*nums)[i])
+	for i := 0; i < len(candidates); i++ {
+		current = append(current, candidates[i])
+		helper(candidates[i:], target-candidates[i], current, res)
+		current = current[:len(current)-1]
 	}
 }
 
 func combinationSum(candidates []int, target int) [][]int {
-	result := make([][]int, 0)
-	current := make([]int, 0)
-	dfs(&result, &candidates, &current, 0, target)
-	return result
+	var res [][]int
+	sort.Ints(candidates)
+	helper(candidates, target, []int{}, &res)
+	return res
 }
