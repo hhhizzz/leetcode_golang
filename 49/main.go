@@ -1,6 +1,9 @@
 package _49
 
-import "strconv"
+import (
+	"sort"
+	"strconv"
+)
 
 func toCount(str string, count *[26]int) string {
 	for i := 0; i < 26; i++ {
@@ -19,7 +22,7 @@ func toCount(str string, count *[26]int) string {
 	return result
 }
 
-func groupAnagrams(strs []string) [][]string {
+func groupAnagrams1(strs []string) [][]string {
 	m := map[string]int{}
 	count := [26]int{}
 	result := make([][]string, 0)
@@ -33,4 +36,21 @@ func groupAnagrams(strs []string) [][]string {
 		}
 	}
 	return result
+}
+
+func groupAnagrams(strs []string) [][]string {
+	var res [][]string
+	m := map[string]int{}
+	for _, str := range strs {
+		bytes := []byte(str)
+		sort.Slice(bytes, func(i, j int) bool { return bytes[i] < bytes[j] })
+		current := string(bytes)
+		if pos, ok := m[current]; ok {
+			res[pos] = append(res[pos], str)
+		} else {
+			res = append(res, []string{str})
+			m[current] = len(res) - 1
+		}
+	}
+	return res
 }
