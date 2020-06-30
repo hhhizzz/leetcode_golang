@@ -1,5 +1,7 @@
 package _400
 
+import "strconv"
+
 func findNthDigit(n int) int {
 	var number []int
 	sum := 0
