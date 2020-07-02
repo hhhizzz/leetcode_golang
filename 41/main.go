@@ -1,32 +1,21 @@
 package _41
 
+// 比较难想到，但是算法不复杂
+// 基本思路是把符合条件的数移动到自己的位置上去，然后第二次扫描检查找出第一个不符合自己位置的数
+// 本题由于是找正整数，因此需要做一下位置映射，
 func firstMissingPositive(nums []int) int {
-	hasOne := false
-	for _, num := range nums {
-		if num == 1 {
-			hasOne = true
+	for i := 0; i < len(nums); i++ {
+		nums[i]--
+	}
+	for i := 0; i < len(nums); i++ {
+		for nums[i] >= 0 && nums[i] < len(nums) && nums[i] != i && nums[i] != nums[nums[i]] {
+			nums[i], nums[nums[i]] = nums[nums[i]], nums[i]
 		}
 	}
-	if !hasOne {
-		return 1
-	}
-	if len(nums) == 1 {
-		return 2
-	}
-	n := len(nums)
-	for i, num := range nums {
-		if num <= 0 || num > n {
-			nums[i] = 1
+	for i := 0; i < len(nums); i++ {
+		if nums[i] != i {
+			return i + 1
 		}
 	}
-	bitmap := make([]int, n+1)
-	for _, num := range nums {
-		bitmap[num] = 1
-	}
-	for i := 1; i <= n; i++ {
-		if bitmap[i] == 0 {
-			return i
-		}
-	}
-	return n + 1
+	return len(nums) + 1
 }
