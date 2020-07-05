@@ -75,3 +75,45 @@ func multiply(num1 string, num2 string) string {
 	result = result[pos:]
 	return result
 }
+
+func reverse(num []byte) {
+	for i := 0; i < len(num)>>1; i++ {
+		num[i], num[len(num)-1-i] = num[len(num)-1-i], num[i]
+	}
+}
+
+// 方法二，最后处理进位，注意处理前缀0的问题
+func multiply2(num1 string, num2 string) string {
+	a := []byte(num1)
+	b := []byte(num2)
+
+	c := make([]int, len(a)+len(b)-1)
+
+	for i := 0; i < len(a); i++ {
+		for j := 0; j < len(b); j++ {
+			c[i+j] += int(a[i]-'0') * int(b[j]-'0')
+		}
+	}
+	var res []byte
+	carry := 0
+	for i := len(c) - 1; i >= 0; i-- {
+		c[i] += carry
+		current := c[i]%10 + '0'
+		carry = c[i] / 10
+		res = append(res, byte(current))
+	}
+	if carry != 0 {
+		res = append(res, byte(carry)+'0')
+	}
+	reverse(res)
+	first := 0
+	for first < len(res) && res[first] == '0' {
+		first++
+	}
+	res = res[first:]
+	if len(res) == 0 {
+		return "0"
+	}
+
+	return string(res)
+}
