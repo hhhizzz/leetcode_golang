@@ -1,61 +1,34 @@
 package _54
 
 func spiralOrder(matrix [][]int) []int {
-	var output []int
-	if len(matrix) == 0 {
-		return output
+	// 使用方向数组
+	// 使用显示器坐标系，左上角为0, 0 x正方向向下，y正方向向右
+	direct := [][]int{
+		{0, 1},
+		{1, 0},
+		{0, -1},
+		{-1, 0},
 	}
-	visited := make([][]bool, len(matrix))
-	for i := 0; i < len(matrix); i++ {
-		visited[i] = make([]bool, len(matrix[i]))
+	n := len(matrix)
+	if n == 0 {
+		return []int{}
 	}
-	i := 0
-	j := -1
-	direction := 0
-	RIGHT := 0
-	DOWN := 1
-	LEFT := 2
-	UP := 3
-	for {
-		if direction == RIGHT {
-			if j+1 < len(matrix[i]) && !visited[i][j+1] {
-				j++
-				output = append(output, matrix[i][j])
-				visited[i][j] = true
-			} else {
-				direction = (direction + 1) % 4
-			}
-		}
-		if direction == DOWN {
-			if i+1 < len(matrix) && !visited[i+1][j] {
-				i++
-				output = append(output, matrix[i][j])
-				visited[i][j] = true
-			} else {
-				direction = (direction + 1) % 4
-			}
-		}
-		if direction == LEFT {
-			if j-1 >= 0 && !visited[i][j-1] {
-				j--
-				output = append(output, matrix[i][j])
-				visited[i][j] = true
-			} else {
-				direction = (direction + 1) % 4
-			}
-		}
-		if direction == UP {
-			if i-1 >= 0 && !visited[i-1][j] {
-				i--
-				output = append(output, matrix[i][j])
-				visited[i][j] = true
-			} else {
-				direction = (direction + 1) % 4
-			}
-		}
-		if (i == 0 || visited[i-1][j]) && (j == 0 || visited[i][j-1]) && (i == (len(matrix)-1) || visited[i+1][j]) && (j == (len(matrix[i])-1) || visited[i][j+1]) {
-			break
-		}
+	m := len(matrix[0])
+	res := make([]int, m*n)
+	x, y, d := 0, 0, 0
+	visited := make([][]bool, n)
+	for i := 0; i < len(visited); i++ {
+		visited[i] = make([]bool, m)
 	}
-	return output
+	for i := 0; i < len(res); i++ {
+		res[i] = matrix[x][y]
+		visited[x][y] = true
+		nextX, nextY := x+direct[d][0], y+direct[d][1]
+		if nextX < 0 || nextX >= n || nextY < 0 || nextY >= m || visited[nextX][nextY] {
+			d = (d + 1) % 4
+			nextX, nextY = x+direct[d][0], y+direct[d][1]
+		}
+		x, y = nextX, nextY
+	}
+	return res
 }
