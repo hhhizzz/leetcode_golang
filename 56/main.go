@@ -1,29 +1,6 @@
 package _56
 
-import (
-	"sort"
-)
-
-type Interval struct {
-	Start int
-	End   int
-}
-
-type byStart []Interval
-
-func (b byStart) Len() int {
-	return len(b)
-}
-
-func (b byStart) Less(i, j int) bool {
-	return b[i].Start < b[j].Start
-}
-
-func (b byStart) Swap(i, j int) {
-	temp := b[i]
-	b[i] = b[j]
-	b[j] = temp
-}
+import "sort"
 
 func max(a, b int) int {
 	if a > b {
@@ -32,20 +9,22 @@ func max(a, b int) int {
 	return b
 }
 
-func merge(intervals []Interval) []Interval {
-	sort.Sort(byStart(intervals))
-	length := len(intervals)
-	result := make([]Interval, 0) //之前的一个方案使用删除，慢了12ms
-	for index := 0; index < length-1; index++ {
-		if intervals[index].End >= intervals[index+1].Start {
-			intervals[index+1].Start = intervals[index].Start
-			intervals[index+1].End = max(intervals[index].End, intervals[index+1].End)
-		} else {
-			result = append(result, intervals[index])
+func merge(intervals [][]int) [][]int {
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] < intervals[j][0]
+	})
+	var res [][]int
+	for i := 0; i < len(intervals); i++ {
+		current := []int{intervals[i][0], intervals[i][1]}
+		for j := i + 1; j < len(intervals); j++ {
+			if intervals[j][0] <= current[1] {
+				current[1] = max(current[1], intervals[j][1])
+				i = j
+			} else {
+				break
+			}
 		}
+		res = append(res, current)
 	}
-	if length > 0 {
-		result = append(result, intervals[length-1])
-	}
-	return result
+	return res
 }
