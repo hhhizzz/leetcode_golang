@@ -9,26 +9,31 @@ package _44
 
 */
 func isMatch(s string, p string) bool {
-	dp := make([][]bool, len(p)+1)
-	for i := 0; i <= len(p); i++ {
-		dp[i] = make([]bool, len(s)+1)
+	// 在前面加个空格更好理解
+	s = " " + s
+	p = " " + p
+	dp := make([][]bool, len(p))
+	for i := 0; i < len(p); i++ {
+		dp[i] = make([]bool, len(s))
 	}
-	//都为空当然可以匹配
+	// 都为空显然可以匹配
 	dp[0][0] = true
-	//处理s为空的情况 注意因为从1开始计数，注意取字符串的时候需要-1，像是p[i-1]和s[j-1]
-	for i := 1; i <= len(p); i++ {
-		if p[i-1] == '*' {
+	// 看s为空时p是否能匹配
+	for i := 1; i < len(p); i++ {
+		if p[i] == '*' {
 			dp[i][0] = dp[i-1][0]
 		}
 	}
-	for i := 1; i <= len(p); i++ {
-		for j := 1; j <= len(s); j++ {
-			if p[i-1] == '*' {
+	for i := 1; i < len(p); i++ {
+		for j := 1; j < len(s); j++ {
+			if p[i] != '*' {
+				if p[i] == s[j] || p[i] == '?' {
+					dp[i][j] = dp[i-1][j-1]
+				}
+			} else {
 				dp[i][j] = dp[i-1][j] || dp[i][j-1]
-			} else if p[i-1] == '?' || p[i-1] == s[j-1] {
-				dp[i][j] = dp[i-1][j-1]
 			}
 		}
 	}
-	return dp[len(p)][len(s)]
+	return dp[len(p)-1][len(s)-1]
 }
