@@ -51,3 +51,29 @@ func generateMatrix(n int) [][]int {
 	}
 	return output
 }
+
+// 方向数组方案
+func generateMatrix2(n int) [][]int {
+	res := make([][]int, n)
+	for i := 0; i < n; i++ {
+		res[i] = make([]int, n)
+	}
+	direct := [][]int{
+		{0, 1},
+		{1, 0},
+		{0, -1},
+		{-1, 0},
+	}
+	x, y := 0, 0
+	point := 0
+	for i := 1; i <= n*n; i++ {
+		res[x][y] = i
+		nextX, nextY := x+direct[point][0], y+direct[point][1]
+		if nextX < 0 || nextX >= n || nextY < 0 || nextY >= n || res[nextX][nextY] != 0 {
+			point = (point + 1) % len(direct)
+			nextX, nextY = x+direct[point][0], y+direct[point][1]
+		}
+		x, y = nextX, nextY
+	}
+	return res
+}
