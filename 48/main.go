@@ -22,3 +22,20 @@ func rotate(matrix [][]int) {
 		}
 	}
 }
+
+//方法2 通过两次对称得到
+func rotate2(matrix [][]int) {
+	n := len(matrix)
+	//  /斜线方向对称
+	for i := 0; i < n; i++ {
+		for j := 0; j < n-i-1; j++ {
+			matrix[i][j], matrix[n-1-j][n-1-i] = matrix[n-1-j][n-1-i], matrix[i][j]
+		}
+	}
+	// -上下方向对称
+	for i := 0; i < n>>1; i++ {
+		for j := 0; j < n; j++ {
+			matrix[i][j], matrix[n-1-i][j] = matrix[n-1-i][j], matrix[i][j]
+		}
+	}
+}
