@@ -1,18 +1,23 @@
 package _62
 
 func uniquePaths(m int, n int) int {
-	var graph = make([][]int, m)
+	dp := make([][]int, 2)
+	for i := 0; i < 2; i++ {
+		dp[i] = make([]int, n)
+		dp[i][0] = 1
+	}
+
 	for i := 0; i < m; i++ {
-		graph[i] = make([]int, n)
-		graph[i][0] = 1
-	}
-	for j := 0; j < n; j++ {
-		graph[0][j] = 1
-	}
-	for i := 1; i < m; i++ {
-		for j := 1; j < n; j++ {
-			graph[i][j] = graph[i-1][j] + graph[i][j-1]
+		current := i % 2
+		last := (current + 1) % 2
+		for j := 0; j < n; j++ {
+			if j == 0 {
+				dp[current][j] = dp[last][j]
+			} else {
+				dp[current][j] = dp[last][j] + dp[current][j-1]
+			}
 		}
 	}
-	return graph[m-1][n-1]
+	current := (m - 1) % 2
+	return dp[current][n-1]
 }
