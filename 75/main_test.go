@@ -7,9 +7,15 @@ import (
 func TestSortColors(t *testing.T) {
 	grids := [][]int{
 		{2, 0, 2, 1, 1, 0},
+		{2},
+		{1, 0, 2},
+		{1, 1, 2},
 	}
 	expects := [][]int{
 		{0, 0, 1, 1, 2, 2},
+		{2},
+		{0, 1, 2},
+		{1, 1, 2},
 	}
 	for num, grid := range grids {
 		sortColors(grid)
