@@ -16,15 +16,11 @@ func merge(intervals [][]int) [][]int {
 	var res [][]int
 	for i := 0; i < len(intervals); i++ {
 		current := []int{intervals[i][0], intervals[i][1]}
-		for j := i + 1; j < len(intervals); j++ {
-			if intervals[j][0] <= current[1] {
-				current[1] = max(current[1], intervals[j][1])
-				i = j
-			} else {
-				break
-			}
+		if len(res) == 0 || intervals[i][0] > res[len(res)-1][1] {
+			res = append(res, current)
+		} else {
+			res[len(res)-1][1] = max(res[len(res)-1][1], intervals[i][1])
 		}
-		res = append(res, current)
 	}
 	return res
 }
