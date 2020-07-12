@@ -1,35 +1,33 @@
 package _57
 
-type Interval struct {
-	Start int
-	End   int
-}
-
-func min(a int, b int) int {
+func min(a, b int) int {
 	if a < b {
 		return a
 	}
 	return b
 }
 
-func max(a int, b int) int {
+func max(a, b int) int {
 	if a > b {
 		return a
 	}
 	return b
 }
 
-func insert(intervals []Interval, newInterval Interval) []Interval {
-	var left, right []Interval
-	for _, current := range intervals {
-		if current.End < newInterval.Start {
-			left = append(left, current)
-		} else if current.Start > newInterval.End {
-			right = append(right, current)
+func insert(intervals [][]int, newInterval []int) [][]int {
+	var left [][]int
+	var right [][]int
+
+	for _, interval := range intervals {
+		if interval[1] < newInterval[0] {
+			left = append(left, interval)
+		} else if interval[0] > newInterval[1] {
+			right = append(right, interval)
 		} else {
-			newInterval.Start = min(newInterval.Start, current.Start)
-			newInterval.End = max(newInterval.End, current.End)
+			newInterval[0] = min(newInterval[0], interval[0])
+			newInterval[1] = max(newInterval[1], interval[1])
 		}
 	}
 	return append(append(left, newInterval), right...)
+
 }
