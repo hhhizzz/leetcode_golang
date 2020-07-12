@@ -1,21 +1,22 @@
 package _75
 
-func quickSort(nums []int) {
-	if len(nums) <= 1 {
-		return
-	}
-	pivot := 0
-	for i := 1; i < len(nums); i++ {
-		if nums[i] < nums[0] {
-			pivot++
-			nums[i], nums[pivot] = nums[pivot], nums[i]
+func sortColors(nums []int) {
+	left := 0
+	right := len(nums) - 1
+	for i := 0; i <= right; i++ {
+		if nums[i] == 0 {
+			nums[left], nums[i] = nums[i], nums[left]
+			left++
+		} else if nums[i] == 2 {
+			for right > left && nums[right] == 2 {
+				right--
+			}
+			if i >= right {
+				break
+			}
+			nums[right], nums[i] = nums[i], nums[right]
+			right--
+			i--
 		}
 	}
-	nums[0], nums[pivot] = nums[pivot], nums[0]
-	quickSort(nums[:pivot])
-	quickSort(nums[pivot+1:])
-}
-
-func sortColors(nums []int) {
-	quickSort(nums)
 }
