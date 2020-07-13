@@ -1,26 +1,25 @@
 package _78
 
-func dfs(nums *[]int, length int, current *[]int, result *[][]int) {
-	if length == 0 {
-		newArray := make([]int, len(*current))
-		copy(newArray, *current)
-		*result = append(*result, newArray)
+func helper(nums, current []int, pos, n int, res *[][]int) {
+	current = append(current, nums[pos])
+	if len(current) == n {
+		temp := make([]int, n)
+		copy(temp, current)
+		*res = append(*res, temp)
 	} else {
-		for i := 0; i < len(*nums); i++ {
-			*current = append(*current, (*nums)[i])
-			nextNum := (*nums)[i+1:]
-			dfs(&nextNum, length-1, current, result)
-			*current = (*current)[:len(*current)-1]
+		diff := n - len(current)
+		for i := pos + 1; i+diff-1 < len(nums); i++ {
+			helper(nums, current, i, n, res)
 		}
 	}
 }
 
 func subsets(nums []int) [][]int {
-	var result [][]int
-	for i := 0; i <= len(nums); i++ {
-		var current []int
-		dfs(&nums, i, &current, &result)
+	res := [][]int{{}}
+	for i := 1; i <= len(nums); i++ {
+		for j := 0; j < len(nums); j++ {
+			helper(nums, []int{}, j, i, &res)
+		}
 	}
-
-	return result
+	return res
 }
