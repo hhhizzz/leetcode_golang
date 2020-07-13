@@ -1,60 +1,29 @@
 package _79
 
-func search(board *[][]byte, visited *[][]bool, word *[]byte, i, j, pos int) bool {
-	if i < 0 || j < 0 || i >= len(*board) || j >= len((*board)[i]) {
+func dfs(board [][]byte, visited [][]bool, i, j int, bytes []byte) bool {
+	if len(bytes) == 0 {
+		return true
+	}
+	if i < 0 || i >= len(board) || j < 0 || j >= len(board[i]) || visited[i][j] || board[i][j] != bytes[0] {
 		return false
+	} else {
+		visited[i][j] = true
+		defer func() {
+			visited[i][j] = false
+		}()
+		return dfs(board, visited, i-1, j, bytes[1:]) || dfs(board, visited, i, j+1, bytes[1:]) || dfs(board, visited, i+1, j, bytes[1:]) || dfs(board, visited, i, j-1, bytes[1:])
 	}
-
-	if (*visited)[i][j] {
-		return false
-	}
-
-	if (*word)[pos] == (*board)[i][j] {
-		if pos == len(*word)-1 {
-			return true
-		} else {
-			(*visited)[i][j] = true
-			if j != len((*board)[i]) {
-				if search(board, visited, word, i-1, j, pos+1) {
-					return true
-				}
-				if search(board, visited, word, i, j+1, pos+1) {
-					return true
-				}
-				if search(board, visited, word, i+1, j, pos+1) {
-					return true
-				}
-				if search(board, visited, word, i, j-1, pos+1) {
-					return true
-				}
-			} else {
-				j = 0
-				i += 1
-				if search(board, visited, word, i-1, j, pos+1) {
-					return true
-				}
-				if search(board, visited, word, i, j+1, pos+1) {
-					return true
-				}
-				if search(board, visited, word, i+1, j, pos+1) {
-					return true
-				}
-			}
-			(*visited)[i][j] = false
-		}
-	}
-	return false
 }
 
 func exist(board [][]byte, word string) bool {
-	wordArray := []byte(word)
 	visited := make([][]bool, len(board))
-	for i := range visited {
+	for i := 0; i < len(visited); i++ {
 		visited[i] = make([]bool, len(board[i]))
 	}
-	for i := range board {
-		for j := range board[i] {
-			if search(&board, &visited, &wordArray, i, j, 0) {
+	bytes := []byte(word)
+	for i := 0; i < len(board); i++ {
+		for j := 0; j < len(board[i]); j++ {
+			if dfs(board, visited, i, j, bytes) {
 				return true
 			}
 		}
