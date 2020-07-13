@@ -1,28 +1,23 @@
 package _77
 
-func dfs(array *[]int, current *[]int, result *[][]int, k int) {
-	if k == 0 {
-		newResult := make([]int, len(*current))
-		copy(newResult, *current)
-		*result = append(*result, newResult)
-		return
+func helper(n, k int, current []int, res *[][]int) {
+	if len(current) == k {
+		temp := make([]int, len(current))
+		copy(temp, current)
+		*res = append(*res, temp)
 	} else {
-		for i := 0; i < len(*array); i++ {
-			*current = append(*current, (*array)[i])
-			newArray := (*array)[i+1:]
-			dfs(&newArray, current, result, k-1)
-			*current = (*current)[:len(*current)-1]
+		// 这个剪枝可以从28ms -> 8ms
+		diff := k - len(current)
+		for i := current[len(current)-1] + 1; i+diff-1 <= n; i++ {
+			helper(n, k, append(current, i), res)
 		}
 	}
 }
 
 func combine(n int, k int) [][]int {
-	array := make([]int, n)
+	var res [][]int
 	for i := 1; i <= n; i++ {
-		array[i-1] = i
+		helper(n, k, []int{i}, &res)
 	}
-	var current []int
-	var result [][]int
-	dfs(&array, &current, &result, k)
-	return result
+	return res
 }
