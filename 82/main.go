@@ -5,24 +5,22 @@ type ListNode struct {
 	Next *ListNode
 }
 
-//注意head如果被删除需要移动head
 func deleteDuplicates(head *ListNode) *ListNode {
-	pre := &ListNode{Next: head}
 	current := head
-	for current != nil && current.Next != nil {
-		if current.Val == current.Next.Val {
+	pre := &ListNode{}
+	last := pre
+	for current != nil {
+		if current.Next != nil && current.Next.Val == current.Val {
 			val := current.Val
 			for current != nil && current.Val == val {
 				current = current.Next
 			}
-			if head.Val == val {
-				head = current
-			}
-			pre.Next = current
 		} else {
-			pre = pre.Next
-			current = pre.Next
+			last.Next = current
+			last = current
+			current = current.Next
+			last.Next = nil
 		}
 	}
-	return head
+	return pre.Next
 }
