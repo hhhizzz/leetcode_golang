@@ -1,23 +1,23 @@
 package _80
 
-func deleteArray(nums *[]int, start, end int) {
-	length := end - start
-	for i := start; i+length < len(*nums); i++ {
-		(*nums)[i] = (*nums)[i+length]
-	}
-	*nums = (*nums)[:len(*nums)-length]
-}
-
 func removeDuplicates(nums []int) int {
-	for i := 0; i < len(nums); i++ {
-		if i+1 < len(nums) && nums[i] == nums[i+1] {
-			j := i + 2
-			for ; j < len(nums) && nums[j] == nums[i]; j++ {
-			}
-			if j > i+2 {
-				deleteArray(&nums, i+2, j)
-			}
+	if len(nums) == 0 {
+		return 0
+	}
+	last := nums[0]
+	cnt := 1
+	pos := 1
+	for i := 1; i < len(nums); i++ {
+		if nums[i] == last {
+			cnt += 1
+		} else {
+			last = nums[i]
+			cnt = 1
+		}
+		if cnt <= 2 {
+			nums[pos] = nums[i]
+			pos++
 		}
 	}
-	return len(nums)
+	return pos
 }
