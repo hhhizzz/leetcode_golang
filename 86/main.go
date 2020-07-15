@@ -20,35 +20,21 @@ type ListNode struct {
 }
 
 func partition(head *ListNode, x int) *ListNode {
-	if head == nil {
-		return nil
-	}
-	current := head
+	leftPre := &ListNode{}
+	rightPre := &ListNode{}
 
-	pre := &ListNode{Next: head}
-	current = head
-
-	tail := &ListNode{}
-	currentTail := tail
-
-	for current != nil {
-		if current.Val >= x {
-			if current == head {
-				head = head.Next
-			}
-			pre.Next = current.Next
-			currentTail.Next = current
-			currentTail = current
-			current.Next = nil
-			current = pre.Next
+	left := leftPre
+	right := rightPre
+	for current := head; current != nil; {
+		if current.Val < x {
+			left.Next = current
+			left = left.Next
 		} else {
-			pre, current = pre.Next, current.Next
+			right.Next = current
+			right = right.Next
 		}
+		current, current.Next = current.Next, nil
 	}
-	if head == nil {
-		head = tail.Next
-	} else {
-		pre.Next = tail.Next
-	}
-	return head
+	left.Next = rightPre.Next
+	return leftPre.Next
 }
