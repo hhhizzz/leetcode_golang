@@ -1,50 +1,25 @@
 package _91
 
 func numDecodings(s string) int {
-	dp := make([]int, len(s))
-	if s[0] > '0' {
-		dp[0] = 1
-	} else {
-		return 0
+	l, m := 1, 0
+	res := 0
+	if len(s) > 0 && s[0] != '0' {
+		res = 1
+		m = 1
 	}
 	for i := 1; i < len(s); i++ {
-		if s[i-1] == '1' {
-			if s[i] > '0' {
-				if i-2 >= 0 {
-					dp[i] = dp[i-1] + dp[i-2]
-				} else {
-					dp[i] = dp[i-1] + 1
-				}
-			} else {
-				if i-2 >= 0 {
-					dp[i] = dp[i-2]
-				} else {
-					dp[i] = 1
-				}
-			}
-		} else if s[i-1] == '2' {
-			if s[i] <= '6' && s[i] > '0' {
-				if i-2 >= 0 {
-					dp[i] = dp[i-1] + dp[i-2]
-				} else {
-					dp[i] = dp[i-1] + 1
-				}
-			} else if s[i] == '0' {
-				if i-2 >= 0 {
-					dp[i] = dp[i-2]
-				} else {
-					dp[i] = 1
-				}
-			} else {
-				dp[i] = dp[i-1]
-			}
+		n := s[i] - '0'
+		nn := n + 10*(s[i-1]-'0')
+		if (nn >= 21 && nn <= 26) || (nn >= 11 && nn <= 19) {
+			res = l + m
+		} else if nn == 20 || nn == 10 {
+			res = l
+		} else if n == 0 {
+			return 0
 		} else {
-			if s[i] == '0' {
-				return 0
-			} else {
-				dp[i] = dp[i-1]
-			}
+			res = m
 		}
+		l, m = m, res
 	}
-	return dp[len(s)-1]
+	return res
 }
