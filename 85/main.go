@@ -58,3 +58,43 @@ func maximalRectangle(matrix [][]byte) int {
 	}
 	return result
 }
+
+// 方法2 使用84题中的单调栈方法，从上到下一行一行构建矩形
+func maximalRectangle2(matrix [][]byte) int {
+	var result int
+	rectangle := make([][]int, len(matrix))
+	for i := 0; i < len(matrix); i++ {
+		currentLine := make([]int, len(matrix[i])+1)
+		currentLine[len(currentLine)-1] = -1
+		var stack []int
+		for j := 0; j < len(currentLine); j++ {
+			if j != len(currentLine)-1 {
+				if i == 0 {
+					if matrix[i][j] == '1' {
+						currentLine[j] = 1
+					}
+				} else {
+					if matrix[i][j] == '1' {
+						currentLine[j] = rectangle[i-1][j] + 1
+					}
+				}
+			}
+			if len(stack) == 0 || currentLine[j] > currentLine[stack[len(stack)-1]] {
+				stack = append(stack, j)
+			} else {
+				for len(stack) > 0 && currentLine[j] <= currentLine[stack[len(stack)-1]] {
+					top := stack[len(stack)-1]
+					stack = stack[:len(stack)-1]
+					if len(stack) == 0 {
+						result = max(result, j*currentLine[top])
+					} else {
+						result = max(result, (j-stack[len(stack)-1]-1)*currentLine[top])
+					}
+				}
+				stack = append(stack, j)
+			}
+		}
+		rectangle[i] = currentLine[:len(currentLine)-1]
+	}
+	return result
+}
