@@ -1,41 +1,37 @@
 package _93
 
-import (
-	"strconv"
-)
+func toInt(s string) int {
+	res := 0
+	for i := 0; i < len(s); i++ {
+		res *= 10
+		res += int(s[i] - '0')
+	}
+	return res
+}
 
-func dfs(s string, current []string, result *[]string) {
-	if len(current) == 4 && len(s) == 0 {
-		ip := ""
-		for i, c := range current {
-			ip += c
-			if i != 3 {
-				ip += "."
-			}
-		}
-		*result = append(*result, ip)
-	}
-	if len(current) > 4 || len(s) == 0 {
-		return
-	}
-	for i := 1; i <= len(s) && i <= 3; i++ {
-		cutString := s[:i]
-		if len(cutString) > 1 && cutString[0] == '0' {
-			break
+func helper(s string, current string, number int, res *[]string) {
+	if number == 4 {
+		if len(s) == 0 {
+			*res = append(*res, current[:len(current)-1])
 		} else {
-			cut, _ := strconv.Atoi(cutString)
-			if cut > 255 {
-				break
-			}
-			current = append(current, cutString)
-			dfs(s[i:], current, result)
-			current = current[:len(current)-1]
+			return
+		}
+	}
+	for i := 1; i <= len(s); i++ {
+		if i > 1 && s[0] == '0' {
+			break
+		}
+		num := toInt(s[:i])
+		if num <= 255 {
+			helper(s[i:], current+s[:i]+".", number+1, res)
+		} else {
+			break
 		}
 	}
 }
 
 func restoreIpAddresses(s string) []string {
-	var result []string
-	dfs(s, []string{}, &result)
-	return result
+	var res []string
+	helper(s, "", 0, &res)
+	return res
 }
