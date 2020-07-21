@@ -6,40 +6,30 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func generateTree(nums []int) []*TreeNode {
-	if len(nums) == 0 {
-		return nil
-	} else if len(nums) == 1 {
-		return []*TreeNode{{nums[0], nil, nil}}
+func helper(l, r int) []*TreeNode {
+	if l > r {
+		return []*TreeNode{nil}
+	}
+	if l == r {
+		return []*TreeNode{{Val: l}}
 	} else {
-		var result []*TreeNode
-		for i := 0; i < len(nums); i++ {
-			left := generateTree(nums[:i])
-			right := generateTree(nums[i+1:])
-			if len(left) == 0 {
+		var res []*TreeNode
+		for i := l; i <= r; i++ {
+			left := helper(l, i-1)
+			right := helper(i+1, r)
+			for _, leftTree := range left {
 				for _, rightTree := range right {
-					result = append(result, &TreeNode{Val: nums[i], Left: nil, Right: rightTree})
-				}
-			} else if len(right) == 0 {
-				for _, leftTree := range left {
-					result = append(result, &TreeNode{Val: nums[i], Left: leftTree, Right: nil})
-				}
-			} else {
-				for _, leftTree := range left {
-					for _, rightTree := range right {
-						result = append(result, &TreeNode{Val: nums[i], Left: leftTree, Right: rightTree})
-					}
+					res = append(res, &TreeNode{Val: i, Left: leftTree, Right: rightTree})
 				}
 			}
 		}
-		return result
+		return res
 	}
 }
 
 func generateTrees(n int) []*TreeNode {
-	nums := make([]int, n)
-	for i := 1; i <= n; i++ {
-		nums[i-1] = i
+	if n == 0 {
+		return []*TreeNode{}
 	}
-	return generateTree(nums)
+	return helper(1, n)
 }
