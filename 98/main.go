@@ -27,6 +27,39 @@ func isValid(root *TreeNode, min, max *int) bool {
 	return isValid(root.Left, nil, &root.Val) && isValid(root.Right, &root.Val, nil)
 }
 
-func isValidBST(root *TreeNode) bool {
+func isValidBST1(root *TreeNode) bool {
 	return isValid(root, nil, nil)
+}
+
+// BST的中序是升序序列，尝试练习一下非递归中序
+func isValidBST(root *TreeNode) bool {
+	var last int
+	inited := false
+
+	var stack []*TreeNode
+	current := root
+	for current != nil {
+		stack = append(stack, current)
+		current = current.Left
+	}
+	for len(stack) != 0 {
+		current = stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+
+		if !inited {
+			inited = true
+		} else {
+			if current.Val <= last {
+				return false
+			}
+		}
+		last = current.Val
+
+		current = current.Right
+		for current != nil {
+			stack = append(stack, current)
+			current = current.Left
+		}
+	}
+	return true
 }
