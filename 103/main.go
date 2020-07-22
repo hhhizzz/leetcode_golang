@@ -6,54 +6,47 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-type TreeNodeWithLevel struct {
-	*TreeNode
-	Level int
-}
-
-func reverse(array []int) {
-	for i := 0; i < len(array)>>1; i++ {
-		array[i], array[len(array)-1-i] = array[len(array)-1-i], array[i]
-	}
-}
-
+// 记录每层的节点，然后按照不同的顺序写入队列
 func zigzagLevelOrder(root *TreeNode) [][]int {
 	var result [][]int
 	if root == nil {
 		return result
 	}
-	stack := []*TreeNodeWithLevel{
-		{root, 1},
-	}
-	currentLevel := 1
-	var currentLevelArray []int
-	for len(stack) != 0 {
-		current := stack[0]
-		stack = stack[1:]
-		if current.Left != nil {
-			stack = append(stack, &TreeNodeWithLevel{current.Left, current.Level + 1})
-		}
-		if current.Right != nil {
-			stack = append(stack, &TreeNodeWithLevel{current.Right, current.Level + 1})
-		}
-		if current.Level == currentLevel {
-			currentLevelArray = append(currentLevelArray, current.Val)
-		} else {
-			newArray := make([]int, len(currentLevelArray))
-			copy(newArray, currentLevelArray)
-			if currentLevel%2 == 0 {
-				reverse(newArray)
+	var queue []*TreeNode
+	var level []*TreeNode
+	level = append(level, root)
+	currentLevel := -1
+
+	for len(queue) != 0 || len(level) != 0 {
+		if len(queue) == 0 {
+			currentLevel++
+			// 因为每一层和上一层的数据是反向的，因此是反向填入队列
+			for i := len(level) - 1; i >= 0; i-- {
+				queue = append(queue, level[i])
 			}
-			result = append(result, newArray)
-			currentLevelArray = []int{current.Val}
-			currentLevel += 1
+			level = []*TreeNode{}
+			result = append(result, []int{})
 		}
-	}
-	if len(currentLevelArray) != 0 {
+		current := queue[0]
+		queue = queue[1:]
+		result[currentLevel] = append(result[currentLevel], current.Val)
+
+		// 注意每层的顺序，如果本层是从右往左的情况，应该先放入右子树
 		if currentLevel%2 == 0 {
-			reverse(currentLevelArray)
+			if current.Left != nil {
+				level = append(level, current.Left)
+			}
+			if current.Right != nil {
+				level = append(level, current.Right)
+			}
+		} else {
+			if current.Right != nil {
+				level = append(level, current.Right)
+			}
+			if current.Left != nil {
+				level = append(level, current.Left)
+			}
 		}
-		result = append(result, currentLevelArray)
 	}
 	return result
 }
