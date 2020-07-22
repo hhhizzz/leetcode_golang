@@ -6,34 +6,32 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-type TreeNodeWithLevel struct {
-	*TreeNode
+type NodeLevel struct {
 	Level int
+	Node  *TreeNode
 }
 
-//非递归还是有点麻烦
 func maxDepth(root *TreeNode) int {
-	var stack []*TreeNodeWithLevel
-	result := 0
-	current := root
-	currentLevel := 1
-	for true {
-		for current != nil {
-			if current.Right != nil {
-				stack = append(stack, &TreeNodeWithLevel{current.Right, currentLevel + 1})
-			}
-			current = current.Left
-			currentLevel += 1
-		}
-		currentLevel -= 1
-		if currentLevel > result {
-			result = currentLevel
-		}
-		if len(stack) == 0 {
-			break
-		}
-		current, currentLevel = stack[len(stack)-1].TreeNode, stack[len(stack)-1].Level
+	var result int
+	if root == nil {
+		return result
+	}
+
+	var stack []NodeLevel
+	stack = append(stack, NodeLevel{Level: 1, Node: root})
+	for len(stack) != 0 {
+		current := stack[len(stack)-1]
 		stack = stack[:len(stack)-1]
+
+		if current.Level > result {
+			result = current.Level
+		}
+		if current.Node.Left != nil {
+			stack = append(stack, NodeLevel{Level: current.Level + 1, Node: current.Node.Left})
+		}
+		if current.Node.Right != nil {
+			stack = append(stack, NodeLevel{Level: current.Level + 1, Node: current.Node.Right})
+		}
 	}
 	return result
 }
