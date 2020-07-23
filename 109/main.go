@@ -25,7 +25,6 @@ func sortedListToBST(head *ListNode) *TreeNode {
 		fast = fast.Next.Next
 		pre = pre.Next
 		slow = slow.Next
-
 	}
 	root := &TreeNode{Val: slow.Val}
 	pre.Next = nil
