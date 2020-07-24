@@ -40,3 +40,15 @@ func hasPathSum(root *TreeNode, sum int) bool {
 	}
 	return false
 }
+
+// 简单做法
+func hasPathSum2(root *TreeNode, sum int) bool {
+	if root == nil {
+		return false
+	}
+	if root.Left == nil && root.Right == nil {
+		return root.Val == sum
+	} else {
+		return hasPathSum(root.Left, sum-root.Val) || hasPathSum(root.Right, sum-root.Val)
+	}
+}
