@@ -6,30 +6,27 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-//后序遍历，找到左子树的最右端点，连接到右子树上
+// 左子树的最右端点接到右子树的最右端点，再返回调节后的节点的最右端点
 func helper(root *TreeNode) *TreeNode {
 	if root == nil {
 		return nil
 	}
-	left := helper(root.Left)
-	right := helper(root.Right)
+	leftRight := helper(root.Left)
+	rightRight := helper(root.Right)
 
-	if left != nil {
-		left.Right = root.Right
-		root.Right = root.Left
-		root.Left = nil
+	if leftRight != nil {
+		root.Left, root.Right, leftRight.Right = nil, root.Left, root.Right
 	}
 
-	if right != nil {
-		return right
+	if rightRight != nil {
+		return rightRight
 	}
-	if left != nil {
-		return left
+	if leftRight != nil {
+		return leftRight
 	}
 	return root
 }
 
-//递归法
 func flatten(root *TreeNode) {
 	helper(root)
 }
