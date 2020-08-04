@@ -4,40 +4,36 @@ import (
 	"math"
 )
 
-func maxInt(a, b int) int {
+func max(a, b int) int {
 	if a > b {
 		return a
 	}
 	return b
 }
 
-func back(root *TreeNode, max *int) int {
-	if root == nil {
-		return 0
-	}
-	left := back(root.Left, max)
-	right := back(root.Right, max)
+func helper(root *TreeNode, result *int) int {
 	current := root.Val
-	if left > 0 {
-		current += left
+	var leftPath int
+	if root.Left != nil {
+		leftPath = helper(root.Left, result)
+		if leftPath > 0 {
+			current += leftPath
+		}
 	}
-	if right > 0 {
-		current += right
+	var rightPath int
+	if root.Right != nil {
+		rightPath = helper(root.Right, result)
+		if rightPath > 0 {
+			current += rightPath
+		}
 	}
-	if current > *max {
-		*max = current
-	}
-	bigger := maxInt(left, right)
-	if bigger < 0 {
-		return root.Val
-	} else {
-		return root.Val + bigger
-	}
+	*result = max(*result, current)
+	return max(root.Val, root.Val+max(leftPath, rightPath))
 }
 
 func maxPathSum(root *TreeNode) int {
 	result := math.MinInt32
-	back(root, &result)
+	helper(root, &result)
 	return result
 }
 
