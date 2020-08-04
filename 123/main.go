@@ -33,9 +33,9 @@ func maxProfit(prices []int) int {
 
 	/*
 	   状态转移方程：
-	    当j为奇数 表示当前持有股票，可以卖出或者不卖
+	    当j为奇数 表示当前持有股票，尝试用今天卖出的获利来更新dp的值，也就是如果今天卖出获利比以前卖出获利更高就更新，否则继续沿用以前的获利值，此时也进行了j次操作但是这第j次并不是当前进行的
 	    dp[i+1][j] = max(dp[i][j-1]+prices[i],dp[i][j])
-	    当j为偶数 表示当前没有持有股票，可以买或者不买
+	    当j为偶数 表示当前没有持有股票，尝试用今天买入后的获利来更新dp，原理同上
 	    dp[i+1][j] = max(dp[i][j-1]-prices[i],dp[i][j])
 	*/
 
@@ -52,5 +52,41 @@ func maxProfit(prices []int) int {
 	}
 	fmt.Println(dp)
 
+	return result
+}
+
+// 第二次尝试，原理一致，写法有些不同，写起来麻烦一点但更容易理解，需要专门来处理边界
+func maxProfit2(prices []int) int {
+	if len(prices) == 0 {
+		return 0
+	}
+	dp := make([][]int, 4)
+	for i := 0; i < len(dp); i++ {
+		dp[i] = make([]int, len(prices))
+	}
+	profit := 0
+	dp[0][0] = -prices[0]
+	for day := 1; day < len(prices); day++ {
+		dp[0][day] = max(-prices[day], dp[0][day-1])
+	}
+	result := profit
+	for action := 1; action < 4; action++ {
+		for day := action; day < len(prices); day++ {
+			if day == action {
+				if action%2 == 1 {
+					dp[action][day] = dp[action-1][day-1] + prices[day]
+				} else {
+					dp[action][day] = dp[action-1][day-1] - prices[day]
+				}
+			} else {
+				if action%2 == 1 {
+					dp[action][day] = max(dp[action-1][day-1]+prices[day], dp[action][day-1])
+				} else {
+					dp[action][day] = max(dp[action-1][day-1]-prices[day], dp[action][day-1])
+				}
+			}
+			result = max(result, dp[action][day])
+		}
+	}
 	return result
 }
