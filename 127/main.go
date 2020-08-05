@@ -1,7 +1,5 @@
 package _127
 
-import "fmt"
-
 func compare(a, b string) bool {
 	num := 0
 	for i := 0; i < len(a); i++ {
@@ -31,7 +29,6 @@ func ladderLength(beginWord string, endWord string, wordList []string) int {
 		for _, word := range wordList {
 			if find(word, currentList) {
 				if word == endWord {
-					fmt.Println(word, currentList)
 					return result + 1
 				}
 				nextList = append(nextList, word)
