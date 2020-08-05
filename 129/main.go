@@ -6,21 +6,22 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func dfs(root *TreeNode, sum int, result *int) {
+func helper(root *TreeNode, result *int, current int) {
 	if root == nil {
 		return
 	}
-	current := sum*10 + root.Val
+	current *= 10
+	current += root.Val
 	if root.Left == nil && root.Right == nil {
 		*result += current
 	} else {
-		dfs(root.Left, current, result)
-		dfs(root.Right, current, result)
+		helper(root.Left, result, current)
+		helper(root.Right, result, current)
 	}
 }
 
 func sumNumbers(root *TreeNode) int {
-	result := 0
-	dfs(root, 0, &result)
+	var result int
+	helper(root, &result, 0)
 	return result
 }
