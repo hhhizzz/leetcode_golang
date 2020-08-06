@@ -1,43 +1,48 @@
 package _131
 
-var dp [][]bool
-
-func dfs(start int, temp *[]string, result *[][]string, s string) {
-	if start == len(s) {
-		newTemp := make([]string, len(*temp))
-		copy(newTemp, *temp)
-		*result = append(*result, newTemp)
+func dfs(s string, palin [][]bool, pos int, current []string, result *[][]string) {
+	if pos == len(s) {
+		temp := make([]string, len(current))
+		copy(temp, current)
+		*result = append(*result, temp)
 		return
 	}
-	for i := start; i < len(s); i++ {
-		if dp[start][i] {
-			*temp = append(*temp, s[start:i+1])
-			dfs(i+1, temp, result, s)
-			*temp = (*temp)[:len(*temp)-1]
+	for i := pos; i < len(s); i++ {
+		if palin[pos][i] {
+			dfs(s, palin, i+1, append(current, s[pos:i+1]), result)
 		}
 	}
 }
 
 func partition(s string) [][]string {
-	//dp[i][j]表示s[i]~s[j]是回文串
-	dp = make([][]bool, len(s))
-	for i := range dp {
-		dp[i] = make([]bool, len(s))
+	// palin[i][j] 表示 s[i:j+1]是回文串
+	palin := make([][]bool, len(s))
+	for i := 0; i < len(palin); i++ {
+		palin[i] = make([]bool, len(s))
 	}
 
-	for length := 1; length <= len(s); length++ {
-		for i := 0; i < len(s); i++ {
-			j := i + length - 1
-			if j < len(s) && s[i] == s[j] {
-				if length <= 3 || dp[i+1][j-1] {
-					dp[i][j] = true
+	for i := 0; i < len(s); i++ {
+		for dis := 0; i+dis < len(s) && i-dis >= 0; dis++ {
+			if dis == 0 {
+				palin[i][i+dis] = true
+			} else {
+				if s[i+dis] == s[i-dis] {
+					palin[i-dis][i+dis] = true
+				} else {
+					break
 				}
+			}
+		}
+		j := i + 1
+		for dis := 0; i-dis >= 0 && j+dis < len(s); dis++ {
+			if s[i-dis] == s[j+dis] {
+				palin[i-dis][j+dis] = true
+			} else {
+				break
 			}
 		}
 	}
 	var result [][]string
-	var temp []string
-
-	dfs(0, &temp, &result, s)
+	dfs(s, palin, 0, []string{}, &result)
 	return result
 }
